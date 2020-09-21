@@ -77,20 +77,34 @@ static const CGFloat kSpacingBetweenRows = 0.0;
 
 /// Called by `-drawRect:`, which means we assume there is an active graphics context.
 - (void)_printAddress:(MailingAddress *)address atLabelRow:(NSInteger)row column:(NSInteger)column {
-	NSRect labelRect = [self _rectForLabelAtRow:row column:column];
+	// Construct the multi-line address string.
+	NSString *line1 = address.name;
+	NSString *line2 = address.street;
+	NSString *line3 = [NSString stringWithFormat:@"%@, %@  %@",
+					   address.city, address.state, address.formattedZIP];
+	NSString *addressText = [@[line1, line2, line3] componentsJoinedByString:@"\n"];
 
+	// Calculate on-paper bounding rectangles and convert them to on-screen coordinates.
+	NSRect labelRectInInches = [self _rectInInchesForLabelAtRow:row column:column];
+	NSRect textRectInInches = NSInsetRect(labelRectInInches, 0.125, 0.125);  // Inset by 1/8 inch.
+
+	NSRect labelRect = [self _convertRect:labelRectInInches fromReference:kPageRectInInches toReference:[self _displayedPageRect]];
+	NSRect textRect = [self _convertRect:textRectInInches fromReference:kPageRectInInches toReference:[self _displayedPageRect]];
+
+	// Do the drawing.
 	[NSColor.lightGrayColor set];
 	NSFrameRect(labelRect);
+	[addressText drawInRect:textRect withAttributes: @{ NSFontAttributeName: [NSFont fontWithName:@"Times" size:NSHeight(textRect)/4.0] }];
 }
 
-- (NSRect)_rectForLabelAtRow:(NSInteger)row column:(NSInteger)column {
+- (NSRect)_rectInInchesForLabelAtRow:(NSInteger)row column:(NSInteger)column {
 	CGFloat labelTop = kTopMarginInInches + row*(kLabelSizeInInches.height + kSpacingBetweenRows);
 	CGFloat labelLeft = kLeftMarginInInches + column*(kLabelSizeInInches.width + kSpacingBetweenColumns);
 	NSRect physicalLabelRect = {
 		.origin = { .x = labelLeft, .y = labelTop },
 		.size = kLabelSizeInInches
 	};
-	return [self _convertRect:physicalLabelRect fromReference:kPageRectInInches toReference:[self _displayedPageRect]];
+	return physicalLabelRect;
 }
 
 /// Calculates a rectangle that is proportionally the same relative to newRef as r is to oldRef.
