@@ -13,6 +13,8 @@
 		7378653725182A3600798FED /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7378653625182A3600798FED /* main.m */; };
 		7378654125182BD100798FED /* MainWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7378653F25182BD100798FED /* MainWindowController.m */; };
 		7378654225182BD100798FED /* MainWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7378654025182BD100798FED /* MainWindowController.xib */; };
+		7378654525182D2F00798FED /* LabelPageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7378654425182D2F00798FED /* LabelPageView.m */; };
+		7378654825182D5700798FED /* MailingAddress.m in Sources */ = {isa = PBXBuildFile; fileRef = 7378654725182D5700798FED /* MailingAddress.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +29,10 @@
 		7378653E25182BD100798FED /* MainWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainWindowController.h; sourceTree = "<group>"; };
 		7378653F25182BD100798FED /* MainWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainWindowController.m; sourceTree = "<group>"; };
 		7378654025182BD100798FED /* MainWindowController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindowController.xib; sourceTree = "<group>"; };
+		7378654325182D2F00798FED /* LabelPageView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LabelPageView.h; sourceTree = "<group>"; };
+		7378654425182D2F00798FED /* LabelPageView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LabelPageView.m; sourceTree = "<group>"; };
+		7378654625182D5700798FED /* MailingAddress.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MailingAddress.h; sourceTree = "<group>"; };
+		7378654725182D5700798FED /* MailingAddress.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MailingAddress.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +67,10 @@
 			children = (
 				7378652D25182A3400798FED /* AppDelegate.h */,
 				7378652E25182A3400798FED /* AppDelegate.m */,
+				7378654625182D5700798FED /* MailingAddress.h */,
+				7378654725182D5700798FED /* MailingAddress.m */,
+				7378654325182D2F00798FED /* LabelPageView.h */,
+				7378654425182D2F00798FED /* LabelPageView.m */,
 				7378653E25182BD100798FED /* MainWindowController.h */,
 				7378653F25182BD100798FED /* MainWindowController.m */,
 				7378654025182BD100798FED /* MainWindowController.xib */,
@@ -144,7 +154,9 @@
 			files = (
 				7378654125182BD100798FED /* MainWindowController.m in Sources */,
 				7378653725182A3600798FED /* main.m in Sources */,
+				7378654525182D2F00798FED /* LabelPageView.m in Sources */,
 				7378652F25182A3400798FED /* AppDelegate.m in Sources */,
+				7378654825182D5700798FED /* MailingAddress.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
