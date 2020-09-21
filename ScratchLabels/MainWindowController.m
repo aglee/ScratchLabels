@@ -6,17 +6,35 @@
 //
 
 #import "MainWindowController.h"
+#import "LabelPageView.h"
 
 @interface MainWindowController ()
+
+@property (strong) IBOutlet LabelPageView *pageView;
 
 @end
 
 @implementation MainWindowController
 
+#pragma mark - NSWindowController methods
+
 - (void)windowDidLoad {
-    [super windowDidLoad];
-    
-    // Implement this method to handle any initialization after your window controller's window has been loaded from its nib file.
+	[super windowDidLoad];
+
+	MailingAddress *addr = [[MailingAddress alloc] init];
+	addr.name = @"Valued Voter";
+	addr.street = @"1234 Elm Street";
+	addr.city = @"Citizenville";
+	addr.state = @"GA";
+	addr.zip = @"98765";
+	addr.zipAddOn = @"0088";
+
+	NSMutableArray *fakeAddresses = [[NSMutableArray alloc] init];
+	for (NSInteger i = 0; i <= 50; i++) {
+		[fakeAddresses addObject:addr];
+	}
+
+	self.pageView.addresses = fakeAddresses;
 }
 
 @end
