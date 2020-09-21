@@ -9,6 +9,8 @@
 
 @implementation LabelPageView
 
+static const BOOL DEBUG_BORDERS = YES;
+
 // All label layout measurements are in inches.
 static const NSInteger kNumLabelRows = 10;
 static const NSInteger kNumLabelColumns = 3;
@@ -32,8 +34,13 @@ static const CGFloat kSpacingBetweenRows = 0.0;
 - (void)drawRect:(NSRect)dirtyRect {
 	[super drawRect:dirtyRect];
 
+	if (DEBUG_BORDERS) {
+		[NSColor.greenColor set];
+		NSFrameRect(self.bounds);
+	}
+
 	// Draw the page border.
-	[NSColor.greenColor set];
+	[NSColor.blackColor set];
 	NSFrameRect([self _displayedPageRect]);
 
 	// Draw the labels.
@@ -65,17 +72,18 @@ static const CGFloat kSpacingBetweenRows = 0.0;
 #pragma mark - Private methods
 
 - (NSRect)_displayedPageRect {
-	return self.bounds;
+	return [self _scaleAndCenterRect:kPageRectInInches toExactlyFitRect:self.bounds];
 }
 
 /// Called by `-drawRect:`, which means we assume there is an active graphics context.
 - (void)_printAddress:(MailingAddress *)address atLabelRow:(NSInteger)row column:(NSInteger)column {
-	NSRect labelRect = [self _boundingRectForLabelAtRow:row column:column];
-	[NSColor.redColor set];
+	NSRect labelRect = [self _rectForLabelAtRow:row column:column];
+
+	[NSColor.lightGrayColor set];
 	NSFrameRect(labelRect);
 }
 
-- (NSRect)_boundingRectForLabelAtRow:(NSInteger)row column:(NSInteger)column {
+- (NSRect)_rectForLabelAtRow:(NSInteger)row column:(NSInteger)column {
 	CGFloat labelTop = kTopMarginInInches + row*(kLabelSizeInInches.height + kSpacingBetweenRows);
 	CGFloat labelLeft = kLeftMarginInInches + column*(kLabelSizeInInches.width + kSpacingBetweenColumns);
 	NSRect physicalLabelRect = {
@@ -85,9 +93,17 @@ static const CGFloat kSpacingBetweenRows = 0.0;
 	return [self _convertRect:physicalLabelRect fromReference:kPageRectInInches toReference:[self _displayedPageRect]];
 }
 
-/// Calculates a rectangle that is proportionally the same relative to `newRef` as `r` is to `oldRef`.
+/// Calculates a rectangle that is proportionally the same relative to newRef as r is to oldRef.
 ///
-/// Doesn't check for e.g. dividing by zero.
+/// Examples:
+///
+/// - If r is the top-left quadrant of oldRef, the returned rectangle is the top-left quadrant of newRef.
+/// - If r is centered in oldRef, the returned rectangle is centered in newRef.
+/// - If newRef is the same as oldRef, the returned rectangle is the same as r.
+///
+/// It doesn't matter whether r lies entirely (or at all) inside oldRef.  The logic is the same.
+///
+/// NOTE: Doesn't check for divide by zero.
 - (NSRect)_convertRect:(NSRect)r fromReference:(NSRect)oldRef toReference:(NSRect)newRef {
 	CGFloat scaleX = NSWidth(newRef) / NSWidth(oldRef);
 	CGFloat scaleY = NSHeight(newRef) / NSHeight(oldRef);
@@ -99,6 +115,29 @@ static const CGFloat kSpacingBetweenRows = 0.0;
 	CGFloat newHeight = scaleY * r.size.height;
 
 	return NSMakeRect(newX, newY, newWidth, newHeight);
+}
+
+/// Returns the result of scaling r1 so it exactly fits r2 in one dimension and is centered within r2 in the other dimension.
+///
+/// NOTE: Doesn't check for divide by zero.
+- (NSRect)_scaleAndCenterRect:(NSRect)r1 toExactlyFitRect:(NSRect)r2 {
+	CGFloat aspectRatio1 = NSWidth(r1)/NSHeight(r1);
+	CGFloat aspectRatio2 = NSWidth(r2)/NSHeight(r2);
+
+	// Make a copy of r2 and adjust it either horizontally or vertically so that it has
+	// the same aspect ratio as r1.
+	NSRect result = r2;
+	if (aspectRatio1 > aspectRatio2) {
+		// The result will fill r2 horizontally and be centered vertically.
+		result.size.height = NSWidth(result) / aspectRatio1;
+		result.origin.y += (NSHeight(r2) - NSHeight(result)) / 2.0;
+	} else {
+		// The result will fill r2 vertically and be centered horizontally.
+		result.size.width = NSHeight(result) * aspectRatio1;
+		result.origin.x += (NSWidth(r2) - NSWidth(result)) / 2.0;
+	}
+
+	return result;
 }
 
 @end
