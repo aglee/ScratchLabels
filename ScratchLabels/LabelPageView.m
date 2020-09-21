@@ -80,7 +80,7 @@ static const CGFloat kSpacingBetweenRows = 0.0;
 	// Construct the multi-line address string.
 	NSString *line1 = address.name;
 	NSString *line2 = address.street;
-	NSString *line3 = [NSString stringWithFormat:@"%@, %@  %@",
+	NSString *line3 = [NSString stringWithFormat:@"%@, %@ %@",
 					   address.city, address.state, address.formattedZIP];
 	NSString *addressText = [@[line1, line2, line3] componentsJoinedByString:@"\n"];
 
@@ -92,8 +92,10 @@ static const CGFloat kSpacingBetweenRows = 0.0;
 	NSRect textRect = [self _convertRect:textRectInInches fromReference:kPageRectInInches toReference:[self _displayedPageRect]];
 
 	// Do the drawing.
-	[NSColor.lightGrayColor set];
-	NSFrameRect(labelRect);
+	if (DEBUG_BORDERS) {
+		[NSColor.lightGrayColor set];
+		NSFrameRect(labelRect);
+	}
 	[addressText drawInRect:textRect withAttributes: @{ NSFontAttributeName: [NSFont fontWithName:@"Times" size:NSHeight(textRect)/4.0] }];
 }
 
