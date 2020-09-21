@@ -11,6 +11,8 @@
 		7378653125182A3600798FED /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7378653025182A3600798FED /* Assets.xcassets */; };
 		7378653425182A3600798FED /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7378653225182A3600798FED /* MainMenu.xib */; };
 		7378653725182A3600798FED /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7378653625182A3600798FED /* main.m */; };
+		7378654125182BD100798FED /* MainWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7378653F25182BD100798FED /* MainWindowController.m */; };
+		7378654225182BD100798FED /* MainWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7378654025182BD100798FED /* MainWindowController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +24,9 @@
 		7378653525182A3600798FED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7378653625182A3600798FED /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		7378653825182A3600798FED /* ScratchLabels.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ScratchLabels.entitlements; sourceTree = "<group>"; };
+		7378653E25182BD100798FED /* MainWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainWindowController.h; sourceTree = "<group>"; };
+		7378653F25182BD100798FED /* MainWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainWindowController.m; sourceTree = "<group>"; };
+		7378654025182BD100798FED /* MainWindowController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindowController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +61,9 @@
 			children = (
 				7378652D25182A3400798FED /* AppDelegate.h */,
 				7378652E25182A3400798FED /* AppDelegate.m */,
+				7378653E25182BD100798FED /* MainWindowController.h */,
+				7378653F25182BD100798FED /* MainWindowController.m */,
+				7378654025182BD100798FED /* MainWindowController.xib */,
 				7378653025182A3600798FED /* Assets.xcassets */,
 				7378653225182A3600798FED /* MainMenu.xib */,
 				7378653525182A3600798FED /* Info.plist */,
@@ -122,6 +130,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7378653125182A3600798FED /* Assets.xcassets in Resources */,
+				7378654225182BD100798FED /* MainWindowController.xib in Resources */,
 				7378653425182A3600798FED /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -133,6 +142,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7378654125182BD100798FED /* MainWindowController.m in Sources */,
 				7378653725182A3600798FED /* main.m in Sources */,
 				7378652F25182A3400798FED /* AppDelegate.m in Sources */,
 			);
