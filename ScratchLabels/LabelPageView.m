@@ -9,10 +9,10 @@
 
 @interface LabelPageView ()
 
-/// The page number of the page being printed (or previewed in the print panel).  Meaningful only during printing.  The value is set by rectForPage:.
+/// The 0-based page number of the page being printed (or previewed in the print panel).  Meaningful only during printing.  This property is set by rectForPage: so that the information can be available to drawRect:.
 @property (assign) NSInteger currentlyPrintingPageNumber;
 
-/// The bounds of the page being printed (or previewed in the print panel).  Meaningful only during printing.  The value is set by rectForPage:.
+/// The bounds of the page being printed (or previewed in the print panel).  Meaningful only during printing.  This property is set by rectForPage: so that the information can be available to drawRect:.
 @property (assign) NSRect currentlyPrintingPageRect;
 
 @end
@@ -23,12 +23,9 @@
 @synthesize addresses = _addresses;
 @synthesize displayedPageNumber = _displayedPageNumber;
 
-#pragma mark - Constants
+#pragma mark - Constants -- page layout
 
-/// If YES, a little extra drawing is done for debugging purposes.
-static const BOOL DEBUG_BORDERS = YES;
-
-// All label layout measurements are in inches, or, as I call them, "paper" coordinates, as opposed to screen coordinates.
+// Layout for a page of Avery 5260 address labels.  They are laid out in 10 rows of 3 on an 8.5"x11" page.
 static const NSInteger kNumLabelRows = 10;
 static const NSInteger kNumLabelColumns = 3;
 static const NSInteger kNumLabelsPerPage = kNumLabelRows*kNumLabelColumns;
@@ -73,10 +70,8 @@ static const CGFloat kSpacingBetweenRows = 0.0;
 	[super drawRect:dirtyRect];
 
 	if ([self _isDrawingToScreen]) {
-		if (DEBUG_BORDERS) {
-			[NSColor.greenColor set];
-			NSFrameRect(self.bounds);
-		}
+		[NSColor.lightGrayColor set];
+		NSRectFill(self.bounds);
 
 		NSRect pageRect = [self _scaleAndCenterRect:kPageRectInInches toExactlyFitRect:self.bounds];
 		[self _drawPage:self.displayedPageNumber inRect:pageRect];
@@ -110,11 +105,16 @@ static const CGFloat kSpacingBetweenRows = 0.0;
 
 /// Draws one page of labels.  It's up to the caller to make sure pageRect has the same aspect ratio as kPageRectInInches.  If it doesn't, the drawing will be scaled.
 - (void)_drawPage:(NSInteger)pageNumber inRect:(NSRect)pageRect {
-	// Draw the page border.
-	[NSColor.blackColor set];
-	NSFrameRect(pageRect);
+	// Draw the page background and border.
+	if ([self _isDrawingToScreen]) {
+		[NSColor.whiteColor set];
+		NSRectFill(pageRect);
+		[NSColor.blackColor set];
+		NSFrameRect(pageRect);
+	}
 
 	// Draw the labels.
+	[NSColor.blackColor set];
 	NSInteger addressIndex = pageNumber*kNumLabelsPerPage;
 	NSInteger labelRow = 0;
 	NSInteger labelColumn = 0;
@@ -150,7 +150,7 @@ static const CGFloat kSpacingBetweenRows = 0.0;
 
 	// Calculate on-paper bounding rectangles and convert them to on-screen coordinates.
 	NSRect labelRectInInches = [self _rectInInchesForLabelAtRow:row column:column];
-	NSRect textRectInInches = NSInsetRect(labelRectInInches, 0.125, 0.125);  // Inset by 1/8 inch.
+	NSRect textRectInInches = NSInsetRect(labelRectInInches, 0.125, 0.2);
 
 	NSRect labelRect = [self _convertRect:labelRectInInches fromReference:kPageRectInInches toReference:pageRect];
 	NSRect textRect = [self _convertRect:textRectInInches fromReference:kPageRectInInches toReference:pageRect];
@@ -160,7 +160,8 @@ static const CGFloat kSpacingBetweenRows = 0.0;
 		[NSColor.lightGrayColor set];
 		NSFrameRect(labelRect);
 	}
-	[addressText drawInRect:textRect withAttributes: @{ NSFontAttributeName: [NSFont fontWithName:@"Times" size:NSHeight(textRect)/4.0] }];
+//	[addressText drawInRect:textRect withAttributes: @{ NSFontAttributeName: [NSFont fontWithName:@"Times" size:NSHeight(textRect)/4.0] }];
+	[addressText drawAtPoint:textRect.origin withAttributes: @{ NSFontAttributeName: [NSFont fontWithName:@"Times" size:NSHeight(textRect)/4.0] }];
 }
 
 /// Returns the label's bounding rect in "paper" coordinates.
