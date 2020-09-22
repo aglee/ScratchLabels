@@ -20,6 +20,11 @@
 
 @implementation LabelPageView
 
+@synthesize addresses = _addresses;
+@synthesize displayedPageNumber = _displayedPageNumber;
+
+#pragma mark - Constants
+
 /// If YES, a little extra drawing is done for debugging purposes.
 static const BOOL DEBUG_BORDERS = YES;
 
@@ -36,6 +41,26 @@ static const CGFloat kTopMarginInInches = 0.5;
 static const CGFloat kLeftMarginInInches = 0.1875;  // 3/16
 static const CGFloat kSpacingBetweenColumns = 0.125;
 static const CGFloat kSpacingBetweenRows = 0.0;
+
+#pragma mark - Getters and setters
+
+- (NSArray<MailingAddress *> *)addresses {
+	return _addresses;
+}
+
+- (void)setAddresses:(NSArray<MailingAddress *> *)addresses {
+	_addresses = [addresses copy];
+	self.needsDisplay = YES;
+}
+
+- (NSInteger)displayedPageNumber {
+	return _displayedPageNumber;
+}
+
+- (void)setDisplayedPageNumber:(NSInteger)displayedPageNumber {
+	_displayedPageNumber = displayedPageNumber;
+	self.needsDisplay = YES;
+}
 
 #pragma mark - NSView methods
 
