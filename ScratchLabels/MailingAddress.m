@@ -22,6 +22,12 @@
 	}
 }
 
+#pragma mark - NSObject methods
+
+- (NSString *)description {
+	return [NSString stringWithFormat:@"%@\n%@\n%@, %@ %@", self.name, self.street, self.city, self.state, self.formattedZIP];
+}
+
 #pragma mark - Private methods
 
 /// Assumes the desired length is at most 5, since it's a ZIP code component.
