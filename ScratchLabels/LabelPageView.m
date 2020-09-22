@@ -156,7 +156,7 @@ static const CGFloat kSpacingBetweenRows = 0.0;
 	NSRect textRect = [self _convertRect:textRectInInches fromReference:kPageRectInInches toReference:pageRect];
 
 	// Do the drawing.
-	if (DEBUG_BORDERS) {
+	if ([self _isDrawingToScreen]) {
 		[NSColor.lightGrayColor set];
 		NSFrameRect(labelRect);
 	}
