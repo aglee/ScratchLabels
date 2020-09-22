@@ -7,13 +7,26 @@
 
 #import "LabelPageView.h"
 
+@interface LabelPageView ()
+
+/// The page number of the page being printed (or previewed in the print panel).  Meaningful only during printing.  The value is set by rectForPage:.
+@property (assign) NSInteger currentlyPrintingPageNumber;
+
+/// The bounds of the page being printed (or previewed in the print panel).  Meaningful only during printing.  The value is set by rectForPage:.
+@property (assign) NSRect currentlyPrintingPageRect;
+
+@end
+
+
 @implementation LabelPageView
 
+/// If YES, a little extra drawing is done for debugging purposes.
 static const BOOL DEBUG_BORDERS = YES;
 
-// All label layout measurements are in inches.
+// All label layout measurements are in inches, or, as I call them, "paper" coordinates, as opposed to screen coordinates.
 static const NSInteger kNumLabelRows = 10;
 static const NSInteger kNumLabelColumns = 3;
+static const NSInteger kNumLabelsPerPage = kNumLabelRows*kNumLabelColumns;
 static const NSRect kPageRectInInches = {
 	.origin = { .x = 0, .y = 0 },
 	.size = { .width = 8.5, .height = 11.0 }
@@ -26,7 +39,7 @@ static const CGFloat kSpacingBetweenRows = 0.0;
 
 #pragma mark - NSView methods
 
-/// This is a flipped view.  Makes calculating the label rectangles easier.
+/// Returns YES.  Using a flipped view makes calculating the label rectangles slightly easier.
 - (BOOL)isFlipped {
 	return YES;
 }
@@ -34,21 +47,53 @@ static const CGFloat kSpacingBetweenRows = 0.0;
 - (void)drawRect:(NSRect)dirtyRect {
 	[super drawRect:dirtyRect];
 
-	if (DEBUG_BORDERS) {
-		[NSColor.greenColor set];
-		NSFrameRect(self.bounds);
-	}
+	if ([self _isDrawingToScreen]) {
+		if (DEBUG_BORDERS) {
+			[NSColor.greenColor set];
+			NSFrameRect(self.bounds);
+		}
 
+		NSRect pageRect = [self _scaleAndCenterRect:kPageRectInInches toExactlyFitRect:self.bounds];
+		[self _drawPage:self.displayedPageNumber inRect:pageRect];
+	} else {
+		[self _drawPage:self.currentlyPrintingPageNumber inRect:self.currentlyPrintingPageRect];
+	}
+}
+
+- (BOOL)knowsPageRange:(NSRangePointer)range {
+	range->location = 1;
+	range->length = (self.addresses.count + kNumLabelsPerPage - 1)/kNumLabelsPerPage;
+	return YES;
+}
+
+- (NSRect)rectForPage:(NSInteger)page {
+	// Remember what page we're printing and what the destination rectangle is, so that
+	// -drawRect: can use this information.
+	self.currentlyPrintingPageNumber = page - 1;  // The given page number is 1-based, whereas our internal numbering is 0-based.
+	self.currentlyPrintingPageRect = (NSRect) {
+		.origin = NSZeroPoint,
+		.size = NSPrintOperation.currentOperation.printInfo.paperSize };
+
+	return self.currentlyPrintingPageRect;
+}
+
+#pragma mark - Private methods
+
+- (BOOL)_isDrawingToScreen {
+	return [NSGraphicsContext currentContextDrawingToScreen];
+}
+
+/// Draws one page of labels.  It's up to the caller to make sure pageRect has the same aspect ratio as kPageRectInInches.  If it doesn't, the drawing will be scaled.
+- (void)_drawPage:(NSInteger)pageNumber inRect:(NSRect)pageRect {
 	// Draw the page border.
 	[NSColor.blackColor set];
-	NSFrameRect([self _displayedPageRect]);
+	NSFrameRect(pageRect);
 
 	// Draw the labels.
-	NSInteger labelsPerPage = kNumLabelRows*kNumLabelColumns;
-	NSInteger addressIndex = self.currentPageNumber*labelsPerPage;
+	NSInteger addressIndex = pageNumber*kNumLabelsPerPage;
 	NSInteger labelRow = 0;
 	NSInteger labelColumn = 0;
-	for (NSInteger i = 0; i < labelsPerPage; i++) {
+	for (NSInteger i = 0; i < kNumLabelsPerPage; i++) {
 		// See if we've reached the end of the address list before we were able to fill
 		// the page.  Checking at the top of the loop handles the case where the address
 		// list is empty.
@@ -57,7 +102,7 @@ static const CGFloat kSpacingBetweenRows = 0.0;
 		}
 
 		// Print one label.
-		[self _printAddress:self.addresses[addressIndex] atLabelRow:labelRow column:labelColumn];
+		[self _drawAddress:self.addresses[addressIndex] inPageRect:pageRect atLabelRow:labelRow column:labelColumn];
 
 		// Update variables for the next loop iteration.
 		addressIndex += 1;
@@ -69,14 +114,8 @@ static const CGFloat kSpacingBetweenRows = 0.0;
 	}
 }
 
-#pragma mark - Private methods
-
-- (NSRect)_displayedPageRect {
-	return [self _scaleAndCenterRect:kPageRectInInches toExactlyFitRect:self.bounds];
-}
-
-/// Called by `-drawRect:`, which means we assume there is an active graphics context.
-- (void)_printAddress:(MailingAddress *)address atLabelRow:(NSInteger)row column:(NSInteger)column {
+/// Draws one label.
+- (void)_drawAddress:(MailingAddress *)address inPageRect:(NSRect)pageRect atLabelRow:(NSInteger)row column:(NSInteger)column {
 	// Construct the multi-line address string.
 	NSString *line1 = address.name;
 	NSString *line2 = address.street;
@@ -88,8 +127,8 @@ static const CGFloat kSpacingBetweenRows = 0.0;
 	NSRect labelRectInInches = [self _rectInInchesForLabelAtRow:row column:column];
 	NSRect textRectInInches = NSInsetRect(labelRectInInches, 0.125, 0.125);  // Inset by 1/8 inch.
 
-	NSRect labelRect = [self _convertRect:labelRectInInches fromReference:kPageRectInInches toReference:[self _displayedPageRect]];
-	NSRect textRect = [self _convertRect:textRectInInches fromReference:kPageRectInInches toReference:[self _displayedPageRect]];
+	NSRect labelRect = [self _convertRect:labelRectInInches fromReference:kPageRectInInches toReference:pageRect];
+	NSRect textRect = [self _convertRect:textRectInInches fromReference:kPageRectInInches toReference:pageRect];
 
 	// Do the drawing.
 	if (DEBUG_BORDERS) {
@@ -99,6 +138,7 @@ static const CGFloat kSpacingBetweenRows = 0.0;
 	[addressText drawInRect:textRect withAttributes: @{ NSFontAttributeName: [NSFont fontWithName:@"Times" size:NSHeight(textRect)/4.0] }];
 }
 
+/// Returns the label's bounding rect in "paper" coordinates.
 - (NSRect)_rectInInchesForLabelAtRow:(NSInteger)row column:(NSInteger)column {
 	CGFloat labelTop = kTopMarginInInches + row*(kLabelSizeInInches.height + kSpacingBetweenRows);
 	CGFloat labelLeft = kLeftMarginInInches + column*(kLabelSizeInInches.width + kSpacingBetweenColumns);
@@ -115,7 +155,7 @@ static const CGFloat kSpacingBetweenRows = 0.0;
 ///
 /// - If r is the top-left quadrant of oldRef, the returned rectangle is the top-left quadrant of newRef.
 /// - If r is centered in oldRef, the returned rectangle is centered in newRef.
-/// - If newRef is the same as oldRef, the returned rectangle is the same as r.
+/// - If oldRef and newRef are the same, the returned rectangle is the same as r.
 ///
 /// It doesn't matter whether r lies entirely (or at all) inside oldRef.  The logic is the same.
 ///

@@ -16,6 +16,13 @@
 
 @implementation MainWindowController
 
+#pragma mark - Action methods
+
+- (IBAction)printLabels:(id)sender {
+	NSPrintOperation *printOperation = [NSPrintOperation printOperationWithView:self.pageView printInfo:[NSPrintInfo sharedPrintInfo]];
+	[printOperation runOperation];
+}
+
 #pragma mark - NSWindowController methods
 
 - (void)windowDidLoad {
