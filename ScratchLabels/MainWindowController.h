@@ -9,7 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MainWindowController : NSWindowController
+@interface MainWindowController : NSWindowController <NSTextViewDelegate>
 
 @end
 
