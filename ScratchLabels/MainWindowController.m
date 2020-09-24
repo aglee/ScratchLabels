@@ -38,6 +38,7 @@
 		[fakeAddresses addObject:addr];
 	}
 	self.pageView.addresses = fakeAddresses;
+	self.addressesTextView.string = @"";
 }
 
 #pragma mark - NSWindowController methods
