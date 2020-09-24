@@ -72,7 +72,7 @@
 //TODO: Add error handling.
 - (NSArray<MailingAddress *> *)_parseAddressesFromString:(NSString *)s {
 	NSMutableArray<MailingAddress *> *addresses = [[NSMutableArray alloc] init];
-	NSArray<NSString *> *lines = [self _removeBlanksFromLines:[s componentsSeparatedByString:@"\n"]];
+	NSArray<NSString *> *lines = [self _parseLinesFromString:s];
 	NSArray<NSArray<NSString *> *> *groupsOfFields = [self _parseGroupsOfFieldsFromLines:lines];
 	for (NSArray<NSString *> *addressFields in groupsOfFields) {
 		[addresses addObject:[self _makeAddressFromFields:addressFields]];
@@ -81,7 +81,8 @@
 }
 
 /// Trims whitespace from each line, and removes empty lines.
-- (NSArray<NSString *> *)_removeBlanksFromLines:(NSArray<NSString *> *)rawLines {
+- (NSArray<NSString *> *)_parseLinesFromString:(NSString *)s {
+	NSArray<NSString *> *rawLines = [s componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
 	NSMutableArray<NSString *> *scrubbedLines = [[NSMutableArray alloc] init];
 
 	for (NSString *line in rawLines) {
@@ -100,14 +101,25 @@
 
 	if (self.oneAddressPerLine) {
 		// Expect each line to contain all the fields of an address, separated by tabs.
-		// Skip any line that doesn't start with a VAN ID -- assume it contains Excel
-		// column titles.  ("VAN" = "voter activation network".)
 		for (NSString *line in lines) {
 			NSArray<NSString *> *group = [line componentsSeparatedByString:@"\t"];
+
+			// Skip any line with fewer than 6 fields.  For example, we might have
+			// accidentally pasted input data that contains one *field* per line rather
+			// than one *address* per line.
+			if (group.count < 6) {
+				continue;
+			}
+
+			// Skip any line where the first field isn't a VAN ID, perhaps because the
+			// line contains Excel column titles rather than address data.  ("VAN" =
+			// "voter activation network".)
 			NSString *firstField = group.firstObject;
 			if (firstField.length < 7 || ![firstField isEqualToString:@(firstField.integerValue).stringValue]) {
 				continue;
 			}
+
+			// If we got this far, assume we have a valid group of address fields.
 			[groupsOfFields addObject:group];
 		}
 	} else {
