@@ -7,12 +7,11 @@
 
 #import "MainWindowController.h"
 #import "LabelPageView.h"
+#import "SLBPrintPanel.h"
 
 @interface MainWindowController ()
-
 @property (strong) IBOutlet NSTextView *addressesTextView;
 @property (strong) IBOutlet LabelPageView *pageView;
-
 @end
 
 @implementation MainWindowController
@@ -20,8 +19,9 @@
 #pragma mark - Action methods
 
 - (IBAction)printLabels:(id)sender {
-	NSPrintOperation *printOperation = [NSPrintOperation printOperationWithView:self.pageView printInfo:[NSPrintInfo sharedPrintInfo]];
-	[printOperation runOperation];
+	NSPrintOperation *printOperation = [NSPrintOperation printOperationWithView:self.pageView];
+	printOperation.printPanel = [SLBPrintPanel printPanel];
+	[printOperation runOperationModalForWindow:self.window delegate:nil didRunSelector:nil contextInfo:NULL];
 }
 
 - (IBAction)useFakeData:(id)sender {

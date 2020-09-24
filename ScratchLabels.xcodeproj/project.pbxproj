@@ -15,6 +15,8 @@
 		7378654225182BD100798FED /* MainWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7378654025182BD100798FED /* MainWindowController.xib */; };
 		7378654525182D2F00798FED /* LabelPageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7378654425182D2F00798FED /* LabelPageView.m */; };
 		7378654825182D5700798FED /* MailingAddress.m in Sources */ = {isa = PBXBuildFile; fileRef = 7378654725182D5700798FED /* MailingAddress.m */; };
+		739A51D7251B140E00B031A9 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 739A51D6251B140E00B031A9 /* ApplicationServices.framework */; };
+		739A51DA251C4FA700B031A9 /* SLBPrintPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 739A51D9251C4FA700B031A9 /* SLBPrintPanel.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +35,9 @@
 		7378654425182D2F00798FED /* LabelPageView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LabelPageView.m; sourceTree = "<group>"; };
 		7378654625182D5700798FED /* MailingAddress.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MailingAddress.h; sourceTree = "<group>"; };
 		7378654725182D5700798FED /* MailingAddress.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MailingAddress.m; sourceTree = "<group>"; };
+		739A51D6251B140E00B031A9 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
+		739A51D8251C4FA700B031A9 /* SLBPrintPanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SLBPrintPanel.h; sourceTree = "<group>"; };
+		739A51D9251C4FA700B031A9 /* SLBPrintPanel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SLBPrintPanel.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -40,6 +45,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				739A51D7251B140E00B031A9 /* ApplicationServices.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -51,6 +57,7 @@
 			children = (
 				7378652C25182A3400798FED /* ScratchLabels */,
 				7378652B25182A3400798FED /* Products */,
+				739A51D5251B140D00B031A9 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -71,6 +78,8 @@
 				7378654725182D5700798FED /* MailingAddress.m */,
 				7378654325182D2F00798FED /* LabelPageView.h */,
 				7378654425182D2F00798FED /* LabelPageView.m */,
+				739A51D8251C4FA700B031A9 /* SLBPrintPanel.h */,
+				739A51D9251C4FA700B031A9 /* SLBPrintPanel.m */,
 				7378653E25182BD100798FED /* MainWindowController.h */,
 				7378653F25182BD100798FED /* MainWindowController.m */,
 				7378654025182BD100798FED /* MainWindowController.xib */,
@@ -81,6 +90,14 @@
 				7378653825182A3600798FED /* ScratchLabels.entitlements */,
 			);
 			path = ScratchLabels;
+			sourceTree = "<group>";
+		};
+		739A51D5251B140D00B031A9 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				739A51D6251B140E00B031A9 /* ApplicationServices.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -152,6 +169,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				739A51DA251C4FA700B031A9 /* SLBPrintPanel.m in Sources */,
 				7378654125182BD100798FED /* MainWindowController.m in Sources */,
 				7378653725182A3600798FED /* main.m in Sources */,
 				7378654525182D2F00798FED /* LabelPageView.m in Sources */,
