@@ -20,8 +20,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// way, the value of the duplex mode gets reset to double-sided the moment the print panel is displayed.  The kludgy
 /// workaround here sets the PMDuplexMode inside an overridden NSPrintPanel method.
 ///
-/// The workaround here also hides the "Two-Sided" check box, which happens to be what I want anyway for this app.  If I
-/// wanted to display that check box but with single-sided as the default, I don't know offhand how I'd do that.
+/// The workaround here also hides the "Two-Sided" check box, which happens to be what I want anyway for this app,
+/// because I never want double-sided printing when I'm printing labels..  If I wanted to display that check box but forcing
+/// single-sided to be the default, I don't know offhand how I'd do that.
 ///
 /// More details about this problem and workaround are in the code comments.
 @interface SLBPrintPanel : NSPrintPanel
