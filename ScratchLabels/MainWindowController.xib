@@ -8,6 +8,7 @@
         <customObject id="-2" userLabel="File's Owner" customClass="MainWindowController">
             <connections>
                 <outlet property="addressesTextView" destination="iJ7-jp-kGi" id="XLb-fM-rKA"/>
+                <outlet property="numLabelsField" destination="lEj-7X-wF6" id="SVx-u4-3fR"/>
                 <outlet property="pageView" destination="j8u-yB-q0w" id="Lcf-mD-Tef"/>
                 <outlet property="window" destination="F0z-JX-Cv5" id="gIp-Ho-8D9"/>
             </connections>
@@ -138,6 +139,15 @@
                                 </dictionary>
                             </binding>
                         </connections>
+                    </textField>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lEj-7X-wF6">
+                        <rect key="frame" x="499" y="57" width="118" height="16"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="K addresses" id="jwI-pB-aRe">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
                     </textField>
                 </subviews>
             </view>

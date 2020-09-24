@@ -20,6 +20,7 @@
 
 @property (strong) IBOutlet NSTextView *addressesTextView;
 @property (strong) IBOutlet LabelPageView *pageView;
+@property (strong) IBOutlet NSTextField *numLabelsField;
 
 @end
 
@@ -46,7 +47,7 @@
 
 		[fakeAddresses addObject:addr];
 	}
-	self.pageView.addresses = fakeAddresses;
+	[self _useAddresses:fakeAddresses];
 	self.addressesTextView.string = @"";
 }
 
@@ -64,10 +65,19 @@
 
 - (void)textDidChange:(NSNotification *)notification {
 	NSArray<MailingAddress *> *addresses = [self _parseAddressesFromString:self.addressesTextView.textStorage.string];
-	self.pageView.addresses = addresses;
+	[self _useAddresses:addresses];
 }
 
 #pragma mark - Private methods
+
+- (void)_useAddresses:(NSArray<MailingAddress *> *)addresses {
+	self.pageView.addresses = addresses;
+
+	// I could use bindings, but I'd have to add an array controller, and then I'd be
+	// tempted to have LabelPageView use the data source pattern instead of owning its
+	// model data.  Too lazy.
+	self.numLabelsField.stringValue = [NSString stringWithFormat:@"%ld addresses", addresses.count];
+}
 
 //TODO: Add error handling.
 - (NSArray<MailingAddress *> *)_parseAddressesFromString:(NSString *)s {
