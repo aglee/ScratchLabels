@@ -97,7 +97,7 @@ static NSString *trim(NSString *s) {
 	addr.city = addressFields[3];
 	addr.state = addressFields[4];
 	addr.zip = addressFields[5];
-	addr.zipAddOn = addressFields[6];
+	addr.zipAddOn = (addressFields.count >= 7 ? addressFields[6] : @"");
 	
 	return addr;
 }
