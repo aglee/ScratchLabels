@@ -9,6 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// Model object containing the fields of a mailing address as provided by the Georgia Postcard Project.
 @interface MailingAddress : NSObject
 
 @property (copy) NSString *name;

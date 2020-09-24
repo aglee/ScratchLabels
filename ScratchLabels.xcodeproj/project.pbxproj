@@ -17,6 +17,7 @@
 		7378654825182D5700798FED /* MailingAddress.m in Sources */ = {isa = PBXBuildFile; fileRef = 7378654725182D5700798FED /* MailingAddress.m */; };
 		739A51D7251B140E00B031A9 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 739A51D6251B140E00B031A9 /* ApplicationServices.framework */; };
 		739A51DA251C4FA700B031A9 /* SLBPrintPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 739A51D9251C4FA700B031A9 /* SLBPrintPanel.m */; };
+		739A51E5251C737B00B031A9 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 739A51E4251C737B00B031A9 /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +39,7 @@
 		739A51D6251B140E00B031A9 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
 		739A51D8251C4FA700B031A9 /* SLBPrintPanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SLBPrintPanel.h; sourceTree = "<group>"; };
 		739A51D9251C4FA700B031A9 /* SLBPrintPanel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SLBPrintPanel.m; sourceTree = "<group>"; };
+		739A51E4251C737B00B031A9 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,6 +57,7 @@
 		7378652125182A3400798FED = {
 			isa = PBXGroup;
 			children = (
+				739A51E4251C737B00B031A9 /* README.md */,
 				7378652C25182A3400798FED /* ScratchLabels */,
 				7378652B25182A3400798FED /* Products */,
 				739A51D5251B140D00B031A9 /* Frameworks */,
@@ -158,6 +161,7 @@
 			files = (
 				7378653125182A3600798FED /* Assets.xcassets in Resources */,
 				7378654225182BD100798FED /* MainWindowController.xib in Resources */,
+				739A51E5251C737B00B031A9 /* README.md in Resources */,
 				7378653425182A3600798FED /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
