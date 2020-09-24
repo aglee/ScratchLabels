@@ -25,8 +25,8 @@
 }
 
 - (IBAction)useFakeData:(id)sender {
-	NSMutableArray *fakeAddresses = [[NSMutableArray alloc] init];
-	for (NSInteger i = 0; i < 50; i++) {
+	NSMutableArray<MailingAddress *> *fakeAddresses = [[NSMutableArray alloc] init];
+	for (NSInteger i = 0; i < 70; i++) {
 		MailingAddress *addr = [[MailingAddress alloc] init];
 		addr.name = [NSString stringWithFormat:@"Test Name #%ld", i+1];
 		addr.street = @"1234 Elm Street";

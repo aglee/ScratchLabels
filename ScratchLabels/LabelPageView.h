@@ -27,8 +27,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// One address will be printed on each label.
 @property (copy) NSArray<MailingAddress *> *addresses;
 
-/// When the view is displayed on-screen, it shows just one page of labels, no matter how many pages there are.  This property indicates which page.  The value is 0-based, i.e. 0 means the first page, 1 means the second page, etc.
+/// When the view is displayed on-screen, it shows just one page of labels, no matter how many pages there are.  This property indicates which page.  The value is 1-based, i.e. 1 means the first page, 2 means the second page, etc.
 @property (assign) NSInteger displayedPageNumber;
+
+@property (readonly) NSInteger numberOfPages;
 
 @end
 

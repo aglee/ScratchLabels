@@ -9,7 +9,7 @@
 
 @interface LabelPageView ()
 
-/// The 0-based page number of the page being printed (or previewed in the print panel).  Meaningful only during printing.  This property is set by rectForPage: so that the information can be available to drawRect:.
+/// The 1-based page number of the page being printed (or previewed in the print panel).  Meaningful only during printing.  This property is set by rectForPage: so that the information can be available to drawRect:.
 @property (assign) NSInteger currentlyPrintingPageNumber;
 
 /// The bounds of the page being printed (or previewed in the print panel).  Meaningful only during printing.  This property is set by rectForPage: so that the information can be available to drawRect:.
@@ -39,6 +39,24 @@ static const CGFloat kLeftMarginInInches = 0.1875;  // 3/16
 static const CGFloat kSpacingBetweenColumns = 0.125;
 static const CGFloat kSpacingBetweenRows = 0.0;
 
+#pragma mark - Init/awake/dealloc
+
+- (instancetype)initWithFrame:(NSRect)frameRect {
+	self = [super initWithFrame:frameRect];
+	if (self) {
+		self.displayedPageNumber = 1;
+	}
+	return self;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+	self = [super initWithCoder:coder];
+	if (self) {
+		self.displayedPageNumber = 1;
+	}
+	return self;
+}
+
 #pragma mark - Getters and setters
 
 - (NSArray<MailingAddress *> *)addresses {
@@ -47,6 +65,7 @@ static const CGFloat kSpacingBetweenRows = 0.0;
 
 - (void)setAddresses:(NSArray<MailingAddress *> *)addresses {
 	_addresses = [addresses copy];
+	self.displayedPageNumber = 1;
 	self.needsDisplay = YES;
 }
 
@@ -57,6 +76,10 @@ static const CGFloat kSpacingBetweenRows = 0.0;
 - (void)setDisplayedPageNumber:(NSInteger)displayedPageNumber {
 	_displayedPageNumber = displayedPageNumber;
 	self.needsDisplay = YES;
+}
+
+- (NSInteger)numberOfPages {
+	return (self.addresses.count + kNumLabelsPerPage - 1)/kNumLabelsPerPage;
 }
 
 #pragma mark - NSView methods
@@ -82,19 +105,25 @@ static const CGFloat kSpacingBetweenRows = 0.0;
 
 - (BOOL)knowsPageRange:(NSRangePointer)range {
 	range->location = 1;
-	range->length = (self.addresses.count + kNumLabelsPerPage - 1)/kNumLabelsPerPage;
+	range->length = self.numberOfPages;
 	return YES;
 }
 
 - (NSRect)rectForPage:(NSInteger)page {
 	// Remember what page we're printing and what the destination rectangle is, so that
 	// -drawRect: can use this information.
-	self.currentlyPrintingPageNumber = page - 1;  // The given page number is 1-based, whereas our internal numbering is 0-based.
+	self.currentlyPrintingPageNumber = page;
 	self.currentlyPrintingPageRect = (NSRect) {
 		.origin = NSZeroPoint,
 		.size = NSPrintOperation.currentOperation.printInfo.paperSize };
 
 	return self.currentlyPrintingPageRect;
+}
+
+#pragma mark - <NSKeyValueObserving> methods
+
++ (NSSet<NSString *> *)keyPathsForValuesAffectingNumberOfPages {
+	return [NSSet setWithArray:@[ @"addresses" ]];
 }
 
 #pragma mark - Private methods
@@ -103,7 +132,7 @@ static const CGFloat kSpacingBetweenRows = 0.0;
 	return [NSGraphicsContext currentContextDrawingToScreen];
 }
 
-/// Draws one page of labels.  It's up to the caller to make sure pageRect has the same aspect ratio as kPageRectInInches.  If it doesn't, the drawing will be scaled.
+/// Draws one page of labels.  It's up to the caller to make sure pageRect has the same aspect ratio as kPageRectInInches.  If it doesn't, the drawing will be scaled.  Expects pageNumber to be 1-based.
 - (void)_drawPage:(NSInteger)pageNumber inRect:(NSRect)pageRect {
 	// Draw the page background and border.
 	if ([self _isDrawingToScreen]) {
@@ -115,7 +144,7 @@ static const CGFloat kSpacingBetweenRows = 0.0;
 
 	// Draw the labels.
 	[NSColor.blackColor set];
-	NSInteger addressIndex = pageNumber*kNumLabelsPerPage;
+	NSInteger addressIndex = (pageNumber - 1)*kNumLabelsPerPage;
 	NSInteger labelRow = 0;
 	NSInteger labelColumn = 0;
 	for (NSInteger i = 0; i < kNumLabelsPerPage; i++) {
