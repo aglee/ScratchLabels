@@ -10,18 +10,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/// This view is used to print mailing addresses on labels.  It is hard-coded to expect Avery 5260 address labels.  Each label is 1" x 2 5/8".  Each sheet contains 30 labels, arranged in 10 rows of 3.
+/// This view is used to print mailing addresses on labels.  It is hard-coded to expect Avery 5260 address labels.
 ///
-/// When the view is displayed in a window, it shows one page of labels.  It's essentially a print preview.
-///
-/// For help understanding Cocoa printing logic, see "Laying Out Page Content" at <https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Printing/osxp_pagination/osxp_pagination.html#//apple_ref/doc/uid/20001051-BBCHHAHI>.  The high-level story is:
-///
-/// - Your program prints by telling AppKit to print a view (see the use of NSPrintOperation).
-/// - AppKit displays a print panel to the user.  It handles the business of selecting the printer and connecting to it.
-/// - The view's drawRect: is invoked to draw the view's contents on a special graphics context that represents printer output.
-/// - Printing introduces the notion of pagination.  Depending on the size of the view and the requirements of your application, the printing of the view may have to span multiple pages of paper.  You may want to draw things differently when printing than when displaying the view on the screen.  To customize pagination behavior, LabelPageView does the following:
-/// 	- Overrides `knowsPageRange:` and `rectForPage:`.
-///		- Has different code branches in drawRect: to draw differently depending on whether it's drawing on-screen or to the printer.
+/// When this view is displayed in a window, it shows one page of labels, with outlines showing where the edges of the
+/// labels are.  It's similar to a print preview, but with the addition of the label edges to help you check that the addresses
+/// look right and they all fit on the labels.  In the actual print preview in the print panel, the label edges are not drawn.
 @interface LabelPageView : NSView
 
 /// One address will be printed on each label.

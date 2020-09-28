@@ -16,6 +16,8 @@
 /// tab-separated fields.  I made the first request by email.  The second time, I used the new Google form to request the
 /// addresses.  I expect to be using the Google form henceforth, and I'm guessing I'll keep getting Excel files, so this
 /// defaults to YES.
+///
+/// NOTE: I haven't added a check box to the UI to toggle this.  If the need arises, I will.
 @property (assign) BOOL oneAddressPerLine;
 
 @property (strong) IBOutlet NSTextView *addressesTextView;

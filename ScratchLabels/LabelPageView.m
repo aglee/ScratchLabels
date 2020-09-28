@@ -25,7 +25,7 @@
 
 #pragma mark - Constants -- page layout
 
-// Layout for a page of Avery 5260 address labels.  They are laid out in 10 rows of 3 on an 8.5"x11" page.
+// Layout for a page of Avery 5260 address labels.  Each label is 1" x 2 5/8".  Each sheet is 8.5"x11" and contains 30 labels, arranged in 10 rows of 3.
 static const NSInteger kNumLabelRows = 10;
 static const NSInteger kNumLabelColumns = 3;
 static const NSInteger kNumLabelsPerPage = kNumLabelRows*kNumLabelColumns;
@@ -128,6 +128,7 @@ static const CGFloat kSpacingBetweenRows = 0.0;
 
 #pragma mark - Private methods
 
+/// If we're not drawing to the screen, we assume we're drawing output for the printer.
 - (BOOL)_isDrawingToScreen {
 	return [NSGraphicsContext currentContextDrawingToScreen];
 }
@@ -168,7 +169,7 @@ static const CGFloat kSpacingBetweenRows = 0.0;
 	}
 }
 
-/// Draws one label.
+/// Draws one label, using pageRect to define the boundaries of the page as a whole.
 - (void)_drawAddress:(MailingAddress *)address inPageRect:(NSRect)pageRect atLabelRow:(NSInteger)row column:(NSInteger)column {
 	// Construct the multi-line address string.
 	NSString *line1 = address.name;
@@ -177,19 +178,22 @@ static const CGFloat kSpacingBetweenRows = 0.0;
 					   address.city, address.state, address.formattedZIP];
 	NSString *addressText = [@[line1, line2, line3] componentsJoinedByString:@"\n"];
 
-	// Calculate on-paper bounding rectangles and convert them to on-screen coordinates.
+	// Calculate on-paper bounding rectangles of the label and the text within the label.
 	NSRect labelRectInInches = [self _rectInInchesForLabelAtRow:row column:column];
 	NSRect textRectInInches = NSInsetRect(labelRectInInches, 0.125, 0.2);
 
+	// Convert the rectangles to coordinates relative to pageRect.
 	NSRect labelRect = [self _convertRect:labelRectInInches fromReference:kPageRectInInches toReference:pageRect];
 	NSRect textRect = [self _convertRect:textRectInInches fromReference:kPageRectInInches toReference:pageRect];
 
-	// Do the drawing.
+	// Draw a background (on-screen only).
 	if ([self _isDrawingToScreen]) {
 		[NSColor.lightGrayColor set];
 		NSFrameRect(labelRect);
 	}
-//	[addressText drawInRect:textRect withAttributes: @{ NSFontAttributeName: [NSFont fontWithName:@"Times" size:NSHeight(textRect)/4.0] }];
+
+	// Draw the address text.  The font size calculation was derived by trial and error.
+	// This is not really the right way to do it, but close enough.
 	[addressText drawAtPoint:textRect.origin withAttributes: @{ NSFontAttributeName: [NSFont fontWithName:@"Times" size:NSHeight(textRect)/4.0] }];
 }
 

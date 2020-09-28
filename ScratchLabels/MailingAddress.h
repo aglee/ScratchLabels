@@ -9,7 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/// Model object containing the fields of a mailing address as provided by the Georgia Postcard Project.
+/// Model object containing the fields of a mailing address.
 @interface MailingAddress : NSObject
 
 @property (copy) NSString *name;
@@ -19,6 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (copy) NSString *zip;
 @property (copy) NSString *zipAddOn;
 
+/// Standard 3-line address format.  Adds leading zeroes as needed to the ZIP and (if present) the ZIP add-on.
 @property (readonly) NSString *formattedZIP;
 
 @end
