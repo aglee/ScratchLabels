@@ -41,6 +41,11 @@ static OSStatus SetDuplexModeToSingleSided(NSPrintInfo *printInfo) {
 
 	// Open the sheet by calling super.  In macOS as of this writing, this call sets the
 	// print info's duplex mode to double-sided, no matter what the user previously chose.
+	//
+	// NOTE: The Big Sur beta as of 2020-09-29 seems to remember the previous value the
+	// user set in the print panel, and forces *that* to be the duplex mode.  While this
+	// is an improvement, what we want is to force single-sided, and this kludge is still
+	// the only way I know to do it.
 	[super beginSheetWithPrintInfo:incomingPrintInfo modalForWindow:docWindow delegate:delegate didEndSelector:didEndSelector contextInfo:contextInfo];
 
 	// Hack around this by immediately changing the print info to single-sided.  This does

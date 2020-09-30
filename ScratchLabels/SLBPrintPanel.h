@@ -32,14 +32,21 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - NSPrintPanel methods
 
-/// Override.  Returns a print panel configured with NSPrintPanelOptions appropriate for this app:
+/// Returns a print panel configured with NSPrintPanelOptions appropriate for this app.
+///
+/// Sets the print panel's options to:
 ///
 /// - Show a preview.
-/// - Show the page-range selection fields.
-/// - **Don't** show the number-of-copies field.  See beginSheetWithPrintInfo:modalForWindow:delegate:didEndSelector:contextInfo: for why.
+/// - Show the page-range selection fields (in case a print job messed up and I want to restart from the middle).
+/// - **Hide** the number-of-copies field, because showing it also shows the "Two-Sided" check box, and the purpose of
+/// this class is to force single-sided printing.
 + (NSPrintPanel *)printPanel;
 
-/// Override. 
+/// Forces the print info's duplex mode to indicate single-sided printing.
+///
+/// It doesn't work to modify the print info before passing it to this method.  The default implementation of this method
+/// blows away whatever value you set for the duplex mode.  This override sets the duplex mode immediately after calling
+/// super, before the user has a chance to interact with the print panel.
 - (void)beginSheetWithPrintInfo:(NSPrintInfo *)incomingPrintInfo modalForWindow:(NSWindow *)docWindow delegate:(nullable id)delegate didEndSelector:(nullable SEL)didEndSelector contextInfo:(nullable void *)contextInfo;
 
 @end
